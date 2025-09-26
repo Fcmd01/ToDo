@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="pt-br" class="">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ToDo</title>
+    <link rel="stylesheet" href="/src/style.css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+
+  </head>
+  <body class="bg-white dark:bg-gray-900 text-black dark:text-white flex flex-col items-center p-4 gap-4 relative min-h-screen">
+
+    <!-- Botão alternar tema (canto superior esquerdo) -->
+    <button id="btnTema" class="absolute top-4 left-4 bg-gray-300 dark:bg-gray-700 text-gray-800 dark:text-gray-200 px-3 py-1 rounded hover:bg-gray-400 dark:hover:bg-gray-600 z-50">
+      🌙 / ☀️
+    </button>
+
+    <!-- Relógio digital (canto superior direito) -->
+    <div id="relogio" class="absolute top-4 right-4 text-lg font-mono z-50"></div>
+
+    <!-- Botão criar tarefa -->
+    <button id="botaoCriar" class="bg-blue-500 dark:bg-blue-700 text-white px-4 py-2 rounded hover:bg-blue-600 dark:hover:bg-blue-800 fixed top-12 right-4 sm:relative sm:top-auto sm:right-auto z-50">
+      Nova Tarefa
+    </button>
+
+    <!-- Filtros de status -->
+    <div class="flex flex-wrap gap-2 mb-4 justify-center sm:justify-start">
+      <button class="filtroStatus bg-gray-300 dark:bg-gray-700 px-3 py-1 rounded hover:bg-gray-400 dark:hover:bg-gray-600" data-status="Todas">Todas</button>
+      <button class="filtroStatus bg-yellow-300 dark:bg-yellow-600 px-3 py-1 rounded hover:bg-yellow-400 dark:hover:bg-yellow-500" data-status="Pendente">Pendentes</button>
+      <button class="filtroStatus bg-green-300 dark:bg-green-600 px-3 py-1 rounded hover:bg-green-400 dark:hover:bg-green-500" data-status="Concluídas">Concluídas</button>
+    </div>
+
+    <!-- Modal adicionar tarefa -->
+    <div id="modal" class="fixed inset-0 items-center justify-center hidden bg-gray-300 bg-opacity-50 dark:bg-gray-800 dark:bg-opacity-70 z-40 p-2">
+      <div class="bg-white dark:bg-gray-900 rounded-lg shadow-lg w-full max-w-md sm:max-w-lg md:max-w-xl p-6">
+        <h2 class="text-xl font-semibold mb-4">Nova Tarefa</h2>
+        <form class="space-y-4" id="form">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Título</label>
+            <input id="titulo" type="text" placeholder="Título da tarefa"
+              class="w-full border rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 dark:bg-gray-800 dark:text-white" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Descrição</label>
+            <textarea id="descricao" placeholder="Descrição da tarefa"
+              class="w-full border rounded px-3 py-2 text-sm h-24 resize-none focus:outline-none focus:ring-2 focus:ring-blue-400 dark:bg-gray-800 dark:text-white"></textarea>
+          </div>
+          <div class="flex justify-end gap-2 pt-2 flex-wrap">
+            <button id="botaoVoltar" type="button"
+              class="flex items-center gap-1 bg-gray-300 dark:bg-gray-700 text-gray-700 dark:text-gray-200 px-4 py-2 rounded hover:bg-gray-400 dark:hover:bg-gray-600">
+              ◀ Voltar
+            </button>
+            <button id="botaoEnviar" type="submit"
+              class="flex items-center gap-1 bg-blue-500 dark:bg-blue-700 text-white px-4 py-2 rounded hover:bg-blue-600 dark:hover:bg-blue-800">
+              Salvar ➕
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal excluir -->
+    <div id="modalConfirmacao" class="fixed inset-0 items-center justify-center hidden bg-black bg-opacity-50 dark:bg-opacity-70 z-50 p-2">
+      <div class="bg-white dark:bg-gray-900 rounded-lg shadow-lg w-full max-w-sm p-6 text-center">
+        <h2 class="text-lg font-semibold mb-4">Tem certeza que deseja excluir?</h2>
+        <div class="flex justify-center gap-4 flex-wrap">
+          <button id="btnNao" class="bg-gray-300 dark:bg-gray-700 text-gray-700 dark:text-gray-200 px-4 py-2 rounded hover:bg-gray-400 dark:hover:bg-gray-600">Não</button>
+          <button id="btnSim" class="bg-red-500 dark:bg-red-700 text-white px-4 py-2 rounded hover:bg-red-600 dark:hover:bg-red-800">Sim</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal concluir -->
+    <div id="modalConcluir" class="fixed inset-0 items-center justify-center hidden bg-black bg-opacity-50 dark:bg-opacity-70 z-50 p-2">
+      <div class="bg-white dark:bg-gray-900 rounded-lg shadow-lg w-full max-w-sm p-6 text-center">
+        <h2 class="text-lg font-semibold mb-4">Deseja marcar esta tarefa como concluída?</h2>
+        <div class="flex justify-center gap-4 flex-wrap">
+          <button id="btnNaoConcluir" class="bg-gray-300 dark:bg-gray-700 text-gray-700 dark:text-gray-200 px-4 py-2 rounded hover:bg-gray-400 dark:hover:bg-gray-600">Não</button>
+          <button id="btnSimConcluir" class="bg-green-500 dark:bg-green-700 text-white px-4 py-2 rounded hover:bg-green-600 dark:hover:bg-green-800">Sim</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- tabela -->
+    <div class="w-full overflow-x-auto">
+      <table class="min-w-[500px] md:min-w-full border-separate border-spacing-y-2">
+        <thead>
+          <tr class="text-left border-b">
+            <th class="py-2">Título</th>
+            <th class="py-2">Descrição</th>
+            <th class="py-2">Data</th>
+            <th class="py-2">Status</th>
+            <th class="py-2 text-right">Ações</th>
+          </tr>
+        </thead>
+        <tbody class="text-sm" id="lista"></tbody>
+      </table>
+    </div>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
